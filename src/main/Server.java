@@ -5,8 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Server {
-    RSA rsa = new RSA();
+public class Server extends RSA {
     ServerSocket serverSocket;
 
     public void startServer() throws IOException, Exception {
@@ -20,7 +19,7 @@ public class Server {
         Connection conn = new Connection(clientSocket);
 
         // envia chave publica para o client
-        String serverPublicKey = rsa.publicKey();
+        String serverPublicKey = RSA.publicKey();
         conn.sendPublicKey(serverPublicKey);
         System.out.println("Server Public Key sended");
 
@@ -31,7 +30,7 @@ public class Server {
         // decripta com chave privada
         String receivedMessage = conn.receive();
         System.out.println("Message received: " + receivedMessage);
-        String decryptedMessage = rsa.decrypt(receivedMessage, rsa.privateKey());
+        String decryptedMessage = RSA.decrypt(receivedMessage, RSA.privateKey());
         System.out.println("Client sended: " + decryptedMessage);
 
         // mensagem de resposta para o client
@@ -40,7 +39,7 @@ public class Server {
         String response = scanner.nextLine();
 
         // mensagem encriptada para o client
-        String encryptedResponse = rsa.encrypt(response, clientPublicKey);
+        String encryptedResponse = RSA.encrypt(response, clientPublicKey);
         System.out.println("Server sended: " + encryptedResponse);
         conn.send(encryptedResponse);
 

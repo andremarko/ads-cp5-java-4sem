@@ -3,9 +3,8 @@ package main;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Client {
+public class Client extends RSA {
     Socket socket;
-    RSA rsa = new RSA();
     public void communicateWithServer() throws Exception {
         socket = new Socket("localhost", 9600);
         Connection conn = new Connection(socket);
@@ -15,7 +14,7 @@ public class Client {
         System.out.println("Public Key: " + serverPublicKey);
 
         // envia chave public do client
-        String clientPublicKey = rsa.publicKey();
+        String clientPublicKey = RSA.publicKey();
         conn.sendPublicKey(clientPublicKey);
 
         // lê mensagem
@@ -23,13 +22,13 @@ public class Client {
         System.out.print("Write your message: ");
         String message = scanner.nextLine();
 
-        String encryptedMessage = rsa.encrypt(message, serverPublicKey);
+        String encryptedMessage = RSA.encrypt(message, serverPublicKey);
         System.out.println("Client sended: " + encryptedMessage);
         conn.send(encryptedMessage);
 
         String receivedMessage = conn.receive();
 
-        String decryptedMessage = rsa.decrypt(receivedMessage, rsa.privateKey());
+        String decryptedMessage = RSA.decrypt(receivedMessage, RSA.privateKey());
         System.out.println("Server responded: " + decryptedMessage);
 
         conn.close();
